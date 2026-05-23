@@ -48,6 +48,7 @@ export async function newCommand(
     FileGeneratorService.generateConfigFiles(config);
     FileGeneratorService.generateDockerFiles(config);
     FileGeneratorService.generateGitHubActionsFiles(config);
+    FileGeneratorService.generateAuthFiles(config);
     FileGeneratorService.generateReadme(config);
 
     spinner.succeed('Project structure created!');

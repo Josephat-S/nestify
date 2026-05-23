@@ -32,9 +32,14 @@ program
 
 // Add the 'generate' command (g for short)
 program
-  .command('generate <schematic> <name>')
+  .command('generate <schematic> [name]')
   .alias('g')
-  .description('Generate a new component (module, controller, service)')
+  .description(
+    'Generate a NestJS component (module|mo, controller|co, service|s, guard|gu, interceptor|i, pipe|p, auth)',
+  )
+  .option('--skip-spec', 'Do not generate spec files', false)
+  .option('--flat', 'Do not create a subdirectory', false)
+  .option('--dry-run', 'Preview files without writing', false)
   .action(generateCommand);
 
 program.parse(process.argv);

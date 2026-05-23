@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import { ProjectAnswers } from '../types/project.types';
-import { PackageManager, Database, ORM } from '../constants/enums';
+import { PackageManager, Database, ORM, AuthFeature } from '../constants/enums';
 
 export class PromptsService {
   static async getProjectDetails(
@@ -39,6 +39,12 @@ export class PromptsService {
         message: 'Add Docker support?',
         default: false,
       },
+      {
+        type: 'confirm',
+        name: 'useAuth',
+        message: 'Add authentication setup?',
+        default: false,
+      },
     ]);
 
     // Ask for ORM choice only if MySQL or PostgreSQL is selected
@@ -56,6 +62,32 @@ export class PromptsService {
         },
       ]);
       answers.orm = ormAnswer.orm;
+    }
+
+    // Ask for auth features if authentication is enabled
+    if (answers.useAuth) {
+      const authAnswer = await inquirer.prompt([
+        {
+          type: 'checkbox',
+          name: 'authFeatures',
+          message: 'Which authentication features would you like?',
+          choices: [
+            { name: 'JWT Authentication', value: AuthFeature.JWT },
+            { name: 'OAuth (Google)', value: AuthFeature.OAUTH },
+            {
+              name: 'Role-Based Access Control (RBAC)',
+              value: AuthFeature.RBAC,
+            },
+            {
+              name: 'Email Verification & Password Reset',
+              value: AuthFeature.EMAIL_VERIFICATION,
+            },
+          ],
+          validate: (input: AuthFeature[]) =>
+            input.length > 0 || 'Please select at least one feature',
+        },
+      ]);
+      answers.authFeatures = authAnswer.authFeatures;
     }
 
     return answers as ProjectAnswers;

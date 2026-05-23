@@ -1,4 +1,10 @@
-import { PackageManager, Database, ORM } from '../constants/enums';
+import {
+  PackageManager,
+  Database,
+  ORM,
+  Schematic,
+  AuthFeature,
+} from '../constants/enums';
 
 export interface ProjectAnswers {
   packageManager: PackageManager;
@@ -7,6 +13,8 @@ export interface ProjectAnswers {
   useDocker: boolean;
   database?: Database;
   orm?: ORM;
+  useAuth?: boolean;
+  authFeatures?: AuthFeature[];
 }
 
 export interface NewCommandOptions {
@@ -18,4 +26,21 @@ export interface ProjectConfig {
   name: string;
   path: string;
   answers: ProjectAnswers;
+}
+
+export interface GenerateCommandOptions {
+  skipSpec: boolean;
+  flat: boolean;
+  dryRun: boolean;
+}
+
+export interface GenerateConfig {
+  schematic: Schematic;
+  name: string;
+  options: GenerateCommandOptions;
+}
+
+export interface AuthGenerateConfig {
+  features: AuthFeature[];
+  options: GenerateCommandOptions;
 }

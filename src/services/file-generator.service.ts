@@ -20,8 +20,9 @@ import { createAppE2ESpec } from '../templates/app-e2e-spec.template';
 import { createJestE2EConfig } from '../templates/jest-e2e-config.template';
 import { createReadme } from '../templates/readme.template';
 import { createDatabaseModule } from '../templates/database-module.template';
-import { Database, ORM } from '../constants/enums';
+import { Database, ORM, AuthFeature } from '../constants/enums';
 import { PackageInstallerService } from './package-installer.service';
+import { AuthGeneratorService } from './auth-generator.service';
 
 export class FileGeneratorService {
   static generateBaseFiles(config: ProjectConfig): void {
@@ -178,5 +179,22 @@ export class FileGeneratorService {
       config.answers.packageManager,
       config.answers.database,
     );
+  }
+
+  static generateAuthFiles(config: ProjectConfig): void {
+    if (!config.answers.useAuth || !config.answers.authFeatures?.length) return;
+
+    // Temporarily change cwd to project path for auth generator
+    const originalCwd = process.cwd();
+    process.chdir(config.path);
+
+    try {
+      AuthGeneratorService.generate({
+        features: config.answers.authFeatures,
+        options: { skipSpec: false, flat: false, dryRun: false },
+      });
+    } finally {
+      process.chdir(originalCwd);
+    }
   }
 }
